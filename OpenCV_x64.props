@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- OpenCV 3.4.5 / VC15 / x64 공용 설정 -->
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<!-- 헤더 경로 -->
+			<AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+		</ClCompile>
+		<Link>
+			<!-- 라이브러리(.lib) 경로 -->
+			<AdditionalLibraryDirectories>$(OPENCV_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+			<!-- 링크 대상 라이브러리 -->
+			<AdditionalDependencies>opencv_world345.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+
+	<!-- VS의 Include/Library Path에도 추가(보수적 적용) -->
+	<PropertyGroup>
+		<IncludePath>$(OPENCV_DIR)\..\..\include;$(IncludePath)</IncludePath>
+		<LibraryPath>$(OPENCV_DIR)\lib;$(LibraryPath)</LibraryPath>
+	</PropertyGroup>
+</Project>
