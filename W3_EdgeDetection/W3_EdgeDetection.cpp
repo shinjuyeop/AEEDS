@@ -4,6 +4,8 @@
 #include <opencv2/highgui.hpp>
 #include <math.h>
 
+#define PI 3.141592
+
 using namespace cv;
 int main()
 {
@@ -20,7 +22,11 @@ int main()
     int xmatrix[3][3] = { {-1, 0, 1}, {-1, 0, 1}, {-1, 0, 1} };
 
     float minVal = 100000; float maxVal = -1;
-
+    /*
+    float val;
+    int *bin;
+    float *pdf;
+    */
     // Edge detection (grayscale)
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -35,7 +41,20 @@ int main()
                     fx += xmatrix[yy + 1][xx + 1] * imgGray.at<uchar>(y + yy, x + xx);
                 }
             }
+			// magnitude
             float val = (float)sqrt(fx * fx + fy * fy);
+            
+            /*
+            float dir;
+
+            dir = atan2(fy, fx);
+            dir = dir * 180 / PI;
+			if (dir < 0) dir += 180;
+
+			bin[y * width + x] = (int)(dir / 20); // 0~8
+			//histogram
+            pdf[bin[y * width + x]] += val[y * width + x];
+            */
 
 			// 최대값, 최소값 설정
             if (y == 0 && x == 0) {
