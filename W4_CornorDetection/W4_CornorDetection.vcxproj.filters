@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="W4_CornorDetection.cpp">
+    <ClCompile Include="W4_CornorDetection%28C++%29.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -84,8 +84,7 @@ void EdgeDetection_HOG(const Mat input, float** out_hog, int* out_dim,
 			// 2-2) 블록별 L2 정규화
             float n2 = eps;
             for (int i = 0;i < nbins;++i) n2 += hist[i] * hist[i];
-            n2 = 1.0f / sqrt
-            (n2);
+            n2 = 1.0f / sqrt(n2);
 
             // 2-3) WholeHist에 연결
             for (int i = 0;i < nbins;++i)

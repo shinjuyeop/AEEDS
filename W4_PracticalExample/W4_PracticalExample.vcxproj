@@ -24,6 +24,7 @@
     <ProjectGuid>{bb6274ce-ca88-4833-8eaf-242051575b07}</ProjectGuid>
     <RootNamespace>W4PracticalExample</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>W4_PracticalExample(Test)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -127,7 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="W4_PracticalExample.cpp" />
+    <ClCompile Include="W4_PracticalExample%28Test%29.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,17 +19,18 @@ void main()
 
     VideoCapture capture(0);
 
-    Mat frame;
-    Mat cornerMap; // normalized cornerness map only
+	Mat frame;      // 카메라에서 받은 프레임
+    Mat cornerMap;  // 코너 맵
 
+    // 예외 처리
     if (!capture.isOpened()) {
         printf("Couldn't open the web camera...\n");
         return;
     }
 
     while (true) {
-        capture >> frame;
-        if (frame.empty()) break;
+		capture >> frame;           // 카메라에서 프레임 읽기
+		if (frame.empty()) break;   // 빈 프레임이면 종료
 
         QueryPerformanceFrequency(&freq);
         QueryPerformanceCounter(&start);

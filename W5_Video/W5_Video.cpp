@@ -9,6 +9,7 @@
 
 using namespace cv;
 
+/*
 // Edge + HOG (블록 16, 이동간격 block/2, 9-bin)
 void EdgeDetection_HOG(const Mat input, float** out_hog, int* out_dim,
     int block, int nbins, float eps)
@@ -111,7 +112,7 @@ void compare_hog(const float* a, const float* b, int n, double* L1, double* L2) 
     *L1 = (double)l1;
     *L2 = sqrt((double)l2);
 }
-
+*/
 
 void main()
 {

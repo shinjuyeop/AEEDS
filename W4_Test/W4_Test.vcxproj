@@ -21,10 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d754f622-4ca7-4c30-9e73-5f57278807d2}</ProjectGuid>
-    <RootNamespace>W4CornorDetection</RootNamespace>
+    <ProjectGuid>{e7b2e413-d244-4413-9f88-5cdc82950042}</ProjectGuid>
+    <RootNamespace>W4Test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>W4_CornorDetection(C++)</ProjectName>
+    <ProjectName>W4_CornorDetection(Ref)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -128,7 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="W4_CornorDetection%28C++%29.cpp" />
+    <ClCompile Include="W4_CornorDetection%28Ref%29.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
