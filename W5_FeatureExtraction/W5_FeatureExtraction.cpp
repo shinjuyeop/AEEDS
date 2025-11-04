@@ -136,7 +136,7 @@ int main() {
     const float DRATIO = 0.65f;  // Lowe ratio (0.75)
 
     // ---- Reference image ----
-    const string REF_PATH = "C:/Users/shinj/Desktop/3-2/AEEDS/Data/feature_matching.jpg";
+    const string REF_PATH = "C:/Users/shinj/Desktop/3-2/AEEDS/Data/feature_matching2.jpg";
     Mat ref_gray = imread(REF_PATH, IMREAD_GRAYSCALE);
     if (ref_gray.empty()) { cerr << "Failed to load: " << REF_PATH << endl; return -1; }
 

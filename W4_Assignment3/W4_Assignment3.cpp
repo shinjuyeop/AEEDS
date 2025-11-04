@@ -95,7 +95,7 @@ int collectCornersByThreshold(const Mat& gray, const float* R,
     }
     return n;
 }
-
+    
 /*** 4) 한 코너 주변 HOG 계산 (16×16, 9-bin, 0~180) ***/
 int computeHOG_around_corner(const Mat& gray, int cx, int cy,
     int block, int nbins, float* hist_out)
