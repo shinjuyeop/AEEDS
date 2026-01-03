@@ -45,7 +45,7 @@ void calc_gradient_magnitude(const Mat& srcGray, Mat& dstMag) {
     // 가장자리는 제외하고 반복문 수행
     for (int y = 1; y < height - 1; y++) {
 
-        // 속도를 위해 행 포인터를 미리 가져옴 (ptr 사용은 C언어 포인터 방식과 호환)
+        // 속도를 위해 행 포인터를 미리 가져옴
         uchar* dRow = dstMag.ptr<uchar>(y);
 
         for (int x = 1; x < width - 1; x++) {

@@ -22,22 +22,22 @@ void seg_getForegroundMaskWithGrabCut(const Mat& src, Mat& outputMask, Rect face
     sRect.height = (int)(faceRect.height * scale);
 
     double topMarginRatio = 0.6;
-    double sideMarginRatio = 3.2;   // 2.2
-    double bottomMarginRatio = 3.5;
+    double sideMarginRatio = 3.2; 
+    double bottomMarginRatio = 2.5;
 
     Rect bodyRect;
 
     int bodyWidth = (int)(sRect.width * sideMarginRatio);
     int bodyX = sRect.x + sRect.width / 2 - bodyWidth / 2;
-    bodyRect.x = std::max(0, bodyX);
-    bodyRect.width = std::min(smallSrc.cols - bodyRect.x, bodyWidth);
+    bodyRect.x = (0 > bodyX ? 0 : bodyX);
+    bodyRect.width = ((smallSrc.cols - bodyRect.x) < bodyWidth ? (smallSrc.cols - bodyRect.x) : bodyWidth);
 
     int hairHeight = (int)(sRect.height * topMarginRatio);
     int bodyY = sRect.y - hairHeight;
-    bodyRect.y = std::max(0, bodyY);
+    bodyRect.y = (0 > bodyY ? 0 : bodyY);
 
     int totalHeight = (int)(sRect.height * bottomMarginRatio) + hairHeight;
-    bodyRect.height = std::min(smallSrc.rows - bodyRect.y, totalHeight);
+    bodyRect.height = ((smallSrc.rows - bodyRect.y) < totalHeight ? (smallSrc.rows - bodyRect.y) : totalHeight);
 
     rectangle(gcMask, bodyRect, Scalar(GC_PR_FGD), -1);
 
@@ -52,7 +52,7 @@ void seg_getForegroundMaskWithGrabCut(const Mat& src, Mat& outputMask, Rect face
     centerBody.x = sRect.x + sRect.width / 3;
     centerBody.width = sRect.width / 3;
     centerBody.y = sRect.y + sRect.height;
-    centerBody.height = (int)(sRect.height * 1.5);
+    centerBody.height = (int)(sRect.height);
 
     if (centerBody.y < smallSrc.rows) {
         if (centerBody.y + centerBody.height > smallSrc.rows)
@@ -66,4 +66,24 @@ void seg_getForegroundMaskWithGrabCut(const Mat& src, Mat& outputMask, Rect face
     Mat smallResultMask;
     compare(gcMask & 1, 1, smallResultMask, CMP_EQ);
     resize(smallResultMask, outputMask, src.size(), 0, 0, INTER_NEAREST);
+
+    // [Visualization] Draw seed rectangles and show result mask
+    {
+        Mat seedVis = smallSrc.clone();
+
+        // Draw faceRect (scaled) in green
+        rectangle(seedVis, sRect, Scalar(0, 255, 0), 2);
+        // Draw bodyRect in blue
+        rectangle(seedVis, bodyRect, Scalar(255, 0, 0), 2);
+        // Draw centerFace (strong FG) in yellow
+        rectangle(seedVis, centerFace, Scalar(0, 255, 255), 2);
+        // Draw centerBody (strong FG) in magenta
+        rectangle(seedVis, centerBody, Scalar(255, 0, 255), 2);
+
+        imshow("Seeds (Face/Body)", seedVis);
+
+        Mat maskVis;
+        normalize(smallResultMask, maskVis, 0, 255, NORM_MINMAX);
+        imshow("GrabCut Mask", maskVis);
+    }
 }

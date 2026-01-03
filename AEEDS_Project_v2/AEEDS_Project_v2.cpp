@@ -18,6 +18,40 @@
 using namespace cv;
 using namespace std;
 
+// LBP 결과 '이미지'를 반환하는 시각화용 함수
+void getLBPImage(const Mat& src, Mat& dst) {
+    Mat gray;
+    if (src.channels() == 3) cvtColor(src, gray, COLOR_BGR2GRAY);
+    else gray = src.clone();
+
+    // 64x64로 리사이즈 (Gesture 함수랑 조건 맞춤)
+    resize(gray, gray, Size(64, 64));
+    dst = Mat::zeros(gray.size(), CV_8UC1);
+
+    for (int y = 1; y < gray.rows - 1; ++y) {
+        uchar* ptr = dst.ptr<uchar>(y);
+        const uchar* p_prev = gray.ptr<uchar>(y - 1);
+        const uchar* p_curr = gray.ptr<uchar>(y);
+        const uchar* p_next = gray.ptr<uchar>(y + 1);
+
+        for (int x = 1; x < gray.cols - 1; ++x) {
+            uchar c = p_curr[x];
+            int code = 0;
+            // 시계 방향 비트 연산
+            if (p_prev[x] > c)     code |= (1 << 0);
+            if (p_prev[x + 1] > c) code |= (1 << 1);
+            if (p_curr[x + 1] > c) code |= (1 << 2);
+            if (p_next[x + 1] > c) code |= (1 << 3);
+            if (p_next[x] > c)     code |= (1 << 4);
+            if (p_next[x - 1] > c) code |= (1 << 5);
+            if (p_curr[x - 1] > c) code |= (1 << 6);
+            if (p_prev[x - 1] > c) code |= (1 << 7);
+
+            ptr[x] = (uchar)code; // 히스토그램이 아닌 픽셀 값으로 저장
+        }
+    }
+}
+
 int main()
 {
     VideoCapture cap(0);
@@ -43,12 +77,23 @@ int main()
     be_setBackgroundImage(imread("C:/Users/shinj/Desktop/3-2/AEEDS/Data/640x360.jpeg"));
 
     bool enrollOriginal = false, enrollGray = false, enrollBlur = false, enrollMosaic = false, enrollImage = false;
-    // C-style storage for samples and templates
+    /*
     float* tplOriginal = (float*)malloc(sizeof(float) * ULBP_BIN);
     float* tplGray = (float*)malloc(sizeof(float) * ULBP_BIN);
     float* tplBlur = (float*)malloc(sizeof(float) * ULBP_BIN);
     float* tplMosaic = (float*)malloc(sizeof(float) * ULBP_BIN);
     float* tplImage = (float*)malloc(sizeof(float) * ULBP_BIN);
+    */
+    // [수정 후] 안전하게 충분한 크기(예: 3000)로 할당하거나 정확한 크기(3*3*256)로 잡아야 합니다.
+    // MotionLBP.cpp의 GRID_SIZE(3)와 LBP_DIM(256)을 고려한 크기입니다.
+    const int FEAT_DIM = 3 * 3 * 256;
+
+    float* tplOriginal = (float*)malloc(sizeof(float) * FEAT_DIM);
+    float* tplGray = (float*)malloc(sizeof(float) * FEAT_DIM);
+    float* tplBlur = (float*)malloc(sizeof(float) * FEAT_DIM);
+    float* tplMosaic = (float*)malloc(sizeof(float) * FEAT_DIM);
+    float* tplImage = (float*)malloc(sizeof(float) * FEAT_DIM);
+
     if (!tplOriginal || !tplGray || !tplBlur || !tplMosaic || !tplImage) {
         fprintf(stderr, "Failed to allocate template buffers\n");
         return -1;
@@ -182,7 +227,25 @@ int main()
                 calc_gradient_magnitude(handGray, handEdge);
 
                 // [디버깅] 에지 영상 확인용 (필요 없으면 주석 처리)
-                imshow("Debug Edge", handEdge);
+                //imshow("Debug Edge", handEdge);
+
+                // ================= [시각화 코드 시작] =================
+                Mat lbpFromGray, lbpFromEdge;
+
+                // (A) 밝기 정보로 LBP 만들기
+                getLBPImage(handGray, lbpFromGray);
+
+                // (B) 에지 정보로 LBP 만들기 (제안하는 방법)
+                getLBPImage(handEdge, lbpFromEdge);
+
+                // (C) 두 영상을 위아래로 붙이기 (vconcat)
+                Mat debugView;
+                vconcat(lbpFromGray, lbpFromEdge, debugView);
+
+                // (D) 화면에 띄우기 (2배 확대해서 보면 더 잘 보임)
+                resize(debugView, debugView, Size(), 4.0, 4.0, INTER_NEAREST);
+                imshow("LBP Comparison (Top:Gray / Bot:Edge)", debugView);
+                // ================= [시각화 코드 끝] ===================
 
                 // [추가됨] 3-1. 유효성 검사: 에지 밀도(Density) 계산
                 // ROI 안에 에지(흰색 선)가 얼마나 많은지 평균을 냅니다.
@@ -203,7 +266,8 @@ int main()
                 // *주의* 벽을 비출 때 Density가 5~10 정도 나온다면, 이 값을 15~20으로 올리세요.
                 if (edgeDensity >= 10.0) {
                     // 4. 에지 영상을 LBP의 입력으로 사용
-                    handFeature = (float*)malloc(sizeof(float) * ULBP_BIN);
+                    // handFeature = (float*)malloc(sizeof(float) * ULBP_BIN);
+                    handFeature = (float*)malloc(sizeof(float) * FEAT_DIM);
 
                     if (handFeature) {
                         // 3. 수정된 함수 호출 (handEdge를 넣으면 내부에서 리사이즈 후 처리함)

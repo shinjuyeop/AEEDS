@@ -22,8 +22,8 @@ void seg_getForegroundMaskWithGrabCut(const Mat& src, Mat& outputMask, Rect face
     sRect.height = (int)(faceRect.height * scale);
 
     double topMarginRatio = 0.6;
-    double sideMarginRatio = 2.2;
-    double bottomMarginRatio = 3.5;
+    double sideMarginRatio = 3.2;   // 2.2
+    double bottomMarginRatio = 3.2;
 
     Rect bodyRect;
 
@@ -66,4 +66,30 @@ void seg_getForegroundMaskWithGrabCut(const Mat& src, Mat& outputMask, Rect face
     Mat smallResultMask;
     compare(gcMask & 1, 1, smallResultMask, CMP_EQ);
     resize(smallResultMask, outputMask, src.size(), 0, 0, INTER_NEAREST);
+
+    // [Visualization] Draw seed rectangles and show result mask
+    {
+        Mat seedVis = smallSrc.clone();
+
+        // Draw faceRect (scaled) in green
+        rectangle(seedVis, sRect, Scalar(0, 255, 0), 2);
+        // Draw bodyRect in blue
+        rectangle(seedVis, bodyRect, Scalar(255, 0, 0), 2);
+        // Draw centerFace (strong FG) in yellow
+        rectangle(seedVis, centerFace, Scalar(0, 255, 255), 2);
+        // Draw centerBody (strong FG) in magenta
+        rectangle(seedVis, centerBody, Scalar(255, 0, 255), 2);
+
+        // Upscale visualization to source size for clearer viewing
+        Mat seedVisBig;
+        resize(seedVis, seedVisBig, src.size(), 0, 0, INTER_LINEAR);
+        imshow("Seeds (Face/Body)", seedVisBig);
+
+        // Visualize GrabCut result mask at small scale for clarity
+        Mat maskVis;
+        normalize(smallResultMask, maskVis, 0, 255, NORM_MINMAX);
+        Mat maskVisBig;
+        resize(maskVis, maskVisBig, src.size(), 0, 0, INTER_NEAREST);
+        imshow("GrabCut Mask", maskVisBig);
+    }
 }

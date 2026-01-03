@@ -95,7 +95,7 @@ void be_gaussianBlurEffect(const Mat& src, Mat& dst, int ksize) {
 
 	// Convolution
     for (int y = radius; y < src.rows - radius; ++y) {
-        Vec3b* drow = dst.ptr<Vec3b>(y);
+        Vec3b* drow = dst.ptr<Vec3b>(y);*
         for (int x = radius; x < src.cols - radius; ++x) {
             double sumB = 0.0, sumG = 0.0, sumR = 0.0;
             int k_idx = 0;
